@@ -9,15 +9,12 @@ model.classes = [0]
 def detect_people_dual_camera():
     # Access the cameras
     phone_cam = cv2.VideoCapture(0)
-    laptop_cam = cv2.VideoCapture(phone_cam_url)
     
     if not phone_cam.isOpened():
         print("Error: Could not access the phone camera.")
         return
     
-    if not laptop_cam.isOpened():
-        print("Error: Could not access the laptop camera.")
-        return
+    
     
     print("Press 'q' to exit.")
     
@@ -28,17 +25,13 @@ def detect_people_dual_camera():
             print("Failed to grab frame from phone camera.")
             break
         
-        ret2, laptop_frame = laptop_cam.read()
-        if not ret2:
-            print("Failed to grab frame from laptop camera.")
-            break
+       
 
         # Resize frames to the same dimensions for concatenation
         phone_frame_resized = cv2.resize(phone_frame, (640, 480))
-        laptop_frame_resized = cv2.resize(laptop_frame, (640, 480))
 
         # Combine frames horizontally (side-by-side)
-        combined_frame = cv2.hconcat([phone_frame_resized, laptop_frame_resized])
+        combined_frame = cv2.hconcat([phone_frame_resized])
 
         # Perform YOLOv5 detection on the combined frame
         results = model(combined_frame, size=640)
@@ -59,7 +52,7 @@ def detect_people_dual_camera():
     
     # Release resources
     phone_cam.release()
-    laptop_cam.release()
+   
     cv2.destroyAllWindows()
 
 # Run the dual-camera live feed detection
